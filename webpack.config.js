@@ -4,6 +4,7 @@ const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const StylelintPlugin = require('stylelint-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 const config = {
   mode: process.env.ENV || 'production',
@@ -26,12 +27,22 @@ const config = {
     extensions: ['.js']
   },
   plugins: [
+    new ESLintPlugin({}),
+    new StylelintPlugin({}),    
+    new CopyPlugin({
+      patterns: [
+        { 
+          from: "public",
+          filter: filepath => {
+            return ! /public\/index.html$/.test(filepath)
+          },
+        },
+      ],
+    }),
     new HtmlWebPackPlugin({
       template: './public/index.html',
       filename: './index.html'
     }),
-    new ESLintPlugin({}),
-    new StylelintPlugin({})
   ],
   module: {
     rules: [
