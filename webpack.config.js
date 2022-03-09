@@ -7,7 +7,6 @@ const StylelintPlugin = require('stylelint-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 
 const config = {
-  mode: process.env.ENV || 'production',
   entry: './src/index.js',
   output: {
     filename: '[name].bundle.js',
@@ -18,7 +17,7 @@ const config = {
     static: './dist',
     hot: true,
     compress: true,
-    port: process.env.PORT || 3000,
+    port: process.env.DEV_PORT || 3000,
   },
   resolve: {
     alias: {
@@ -69,9 +68,10 @@ const config = {
   }
 };
 
-if(process.env.ENV !== 'production') {
-  config.devtool = 'inline-source-map';
-}
+module.exports = (env, argv) => {
+  if (argv.mode === 'development') {
+    config.devtool = 'inline-source-map';
+  }
 
-
-module.exports = config
+  return config;
+};
